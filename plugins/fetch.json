@@ -14,5 +14,30 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "org.apache.cordova.geolocation": {
+        "source": {
+            "type": "registry",
+            "id": "org.apache.cordova.geolocation"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "fi.avaus.cordova.geolocation": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/durkiewicz/cordova-plugin-geolocation.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.evothings.ble": {
+        "source": {
+            "type": "registry",
+            "id": "com.evothings.ble"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }
