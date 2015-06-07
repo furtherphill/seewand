@@ -50,13 +50,7 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-    },
-
-    initBLE: function(){
-        alert("initBLE");
-        luyouBT.startScan();
     }
-
 };
 
 app.initialize();

@@ -29,7 +29,7 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
-        document.addEventListener('click', function(){luyoBT.startScan(evothings.ble);},false);
+        document.addEventListener('click', function(){luyouBT.startScan(evothings.ble);},false);
     },
 
     // deviceready Event Handler
@@ -50,13 +50,7 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-    },
-
-    initBLE: function(){
-        alert("initBLE");
-        luyoBT.startScan();
     }
-
 };
 
 app.initialize();

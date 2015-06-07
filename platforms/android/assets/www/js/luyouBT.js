@@ -1,7 +1,7 @@
 var ble = null;
 
-var luyoBT = {
-	// Discovered devices.
+var luyouBT = {
+    // Discovered devices.
     knownDevices: {},
 
     // Reference to the device we are connecting to.
@@ -16,10 +16,6 @@ var luyoBT = {
     characteristicWrite: null,
     descriptorNotification: null,
 
-    setBLE: function(bt){
-        ble = bt;
-    },
-
     startScan: function(bt)
     {
         alert("attempting scan: " );
@@ -29,18 +25,18 @@ var luyoBT = {
             ble.startScan(
                 function(deviceInfo)
                 {
-                    /*if (luyoBT.knownDevices[deviceInfo.address])
+                    /*if (luyouBT.knownDevices[deviceInfo.address])
                     {
                         return;
                     }
                     //alert('found device: ' + deviceInfo.name);
-                    luyoBT.knownDevices[deviceInfo.address] = deviceInfo;*/
-                    alert(deviceInfo.name + " " + (deviceInfo.name === 'HMSoft') + " " + !luyoBT.connectee);
-                    if (deviceInfo.name === 'HMSoft' && !luyoBT.connectee)
+                    luyouBT.knownDevices[deviceInfo.address] = deviceInfo;*/
+                    alert(deviceInfo.name + " " + (deviceInfo.name === 'HMSoft') + " " + !luyouBT.connectee);
+                    if (deviceInfo.name === 'HMSoft' && !luyouBT.connectee)
                     {
                         alert('Found HMSoft!');
-                        //luyoBT.connectee = deviceInfo;
-                        luyoBT.connect(deviceInfo.address);
+                        //luyouBT.connectee = deviceInfo;
+                        luyouBT.connect(deviceInfo.address);
                     }
                 },
                 function(errorCode)
@@ -61,14 +57,14 @@ var luyoBT = {
                 if (connectInfo.state == 2) // Connected
                 {
                     alert('Connected: ' + connectInfo.deviceHandle);
-                    luyoBT.deviceHandle = connectInfo.deviceHandle;
-                    luyoBT.getServices(connectInfo.deviceHandle);
+                    luyouBT.deviceHandle = connectInfo.deviceHandle;
+                    luyouBT.getServices(connectInfo.deviceHandle);
                 }
             },
             function(errorCode)
             {
                 alert('connect error: ' + errorCode);
-                luyoBT.connect(address);
+                luyouBT.connect(address);
             });
     },
 
@@ -90,17 +86,17 @@ var luyoBT = {
                     if (characteristic.uuid == '0000ffe1-0000-1000-8000-00805f9b34fb')
                     {
                         alert("found char 1");
-                        luyoBT.characteristicWrite = characteristic.handle;
-                        luyoBT.characteristicRead = characteristic.handle;
+                        luyouBT.characteristicWrite = characteristic.handle;
+                        luyouBT.characteristicRead = characteristic.handle;
                     }
 
                 }
             }
 
-            if (luyoBT.characteristicRead && luyoBT.characteristicWrite)
+            if (luyouBT.characteristicRead && luyouBT.characteristicWrite)
             {
                 alert('RX/TX services found.');
-                luyoBT.startReading(deviceHandle);
+                luyouBT.startReading(deviceHandle);
             }
             else
             {
@@ -116,20 +112,20 @@ var luyoBT = {
     startReading: function(deviceHandle){    
         alert("start reading");   
         // Turn notifications on.
-        luyoBT.write(
+        luyouBT.write(
             'writeDescriptor',
             deviceHandle,
-            luyoBT.characteristicWrite,
+            luyouBT.characteristicWrite,
             new Uint8Array([1,0]));
 
         // Start reading notifications.
         evothings.ble.enableNotification(
             deviceHandle,
-            luyoBT.characteristicRead,
+            luyouBT.characteristicRead,
             function(data)
             {
                 alert("Data: " + data);
-                //luyoBT.drawLines([new DataView(data).getUint16(0, true)]);
+                //luyouBT.drawLines([new DataView(data).getUint16(0, true)]);
             },
             function(errorCode)
             {
