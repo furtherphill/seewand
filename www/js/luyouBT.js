@@ -1,6 +1,6 @@
 var ble = null;
 
-var luyoBT = {
+var luyouBT = {
 	// Discovered devices.
     knownDevices: {},
 
