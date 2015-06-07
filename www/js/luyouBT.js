@@ -18,10 +18,9 @@ var luyouBT = {
 
     startScan: function(bt)
     {
-        alert("attempting scan: " );
+        alert("start scan");
         ble = bt;
         if(ble){
-            alert('Scanning...');
             ble.startScan(
                 function(deviceInfo)
                 {
@@ -29,12 +28,16 @@ var luyouBT = {
                     {
                         return;
                     }
-                    //alert('found device: ' + deviceInfo.name);
+                    alert('found device: ' + deviceInfo.name);
                     luyouBT.knownDevices[deviceInfo.address] = deviceInfo;*/
-                    alert(deviceInfo.name + " " + (deviceInfo.name === 'HMSoft') + " " + !luyouBT.connectee);
-                    if (deviceInfo.name === 'HMSoft' && !luyouBT.connectee)
+                    //alert(deviceInfo.name + " " + (deviceInfo.name === 'HMSoft') + " " + !luyouBT.connectee);
+                    /*Object.keys(deviceInfo).forEach(function(key){
+                        alert(key + ": " + deviceInfo[key]);
+                    });*/
+                    //alert('found device: ' + deviceInfo.name);
+                    if (deviceInfo.address == '78:A5:04:29:34:78' && !luyouBT.connectee)
                     {
-                        alert('Found HMSoft!');
+                        //alert('Found HMSoft!');
                         //luyouBT.connectee = deviceInfo;
                         luyouBT.connect(deviceInfo.address);
                     }
@@ -49,28 +52,28 @@ var luyouBT = {
     connect: function(address)
     {
         ble.stopScan();
-        alert('Connecting...');
+        //alert('Connecting...');
         evothings.ble.connect(
             address,
             function(connectInfo)
             {
                 if (connectInfo.state == 2) // Connected
                 {
-                    alert('Connected: ' + connectInfo.deviceHandle);
+                    //alert('Connected: ' + connectInfo.deviceHandle);
                     luyouBT.deviceHandle = connectInfo.deviceHandle;
                     luyouBT.getServices(connectInfo.deviceHandle);
                 }
             },
             function(errorCode)
             {
-                alert('connect error: ' + errorCode);
+                //alert('connect error: ' + errorCode);
                 luyouBT.connect(address);
             });
     },
 
     getServices: function(deviceHandle)
     {
-        alert('Reading services...');
+        //alert('Reading services...');
 
         evothings.ble.readAllServiceData(deviceHandle, function(services)
         {
@@ -85,7 +88,7 @@ var luyouBT = {
 
                     if (characteristic.uuid == '0000ffe1-0000-1000-8000-00805f9b34fb')
                     {
-                        alert("found char 1");
+                        //alert("found char 1");
                         luyouBT.characteristicWrite = characteristic.handle;
                         luyouBT.characteristicRead = characteristic.handle;
                     }
@@ -95,7 +98,7 @@ var luyouBT = {
 
             if (luyouBT.characteristicRead && luyouBT.characteristicWrite)
             {
-                alert('RX/TX services found.');
+                //alert('RX/TX services found.');
                 luyouBT.startReading(deviceHandle);
             }
             else
@@ -110,13 +113,9 @@ var luyouBT = {
     },
 
     startReading: function(deviceHandle){    
-        alert("start reading");   
+        alert("device ready");   
         // Turn notifications on.
-        luyouBT.write(
-            'writeDescriptor',
-            deviceHandle,
-            luyouBT.characteristicWrite,
-            new Uint8Array([1,0]));
+        //luyouBT.write(new Uint8Array([1,0]));
 
         // Start reading notifications.
         evothings.ble.enableNotification(
@@ -124,7 +123,8 @@ var luyouBT = {
             luyouBT.characteristicRead,
             function(data)
             {
-                alert("Data: " + data);
+                //alert("got data type: " +  evothings.ble.fromUtf8(data));
+                alert("val: " + String.fromCharCode.apply(null, new Uint8Array(data)));
                 //luyouBT.drawLines([new DataView(data).getUint16(0, true)]);
             },
             function(errorCode)
@@ -135,25 +135,42 @@ var luyouBT = {
 
     },
 
-    write: function(writeFunc,deviceHandle,handle,value)
+    write: function(value)
     {
-        alert("write");
-        if (handle)
+        //alert("write");
+        if (luyouBT.characteristicWrite)
         {
-            alert("handle");
             ble.writeCharacteristic(
-                deviceHandle,
-                handle,
+                luyouBT.deviceHandle,
+                luyouBT.characteristicWrite,
                 value,
                 function()
                 {   
-                    alert("success");
-                    //alert(writeFunc + ': ' + handle + ' success.');
+                    //alert("success");
+                    alert(value + ' success.');
                 },
                 function(errorCode)
                 {
-                    alert(writeFunc + ': ' + handle + ' error: ' + errorCode);
+                    alert('error: ' + errorCode);
                 });
         }
+    },
+
+    write_left: function(){
+        alert("left");
+        var arr = new Uint8Array(1);
+        arr[0] = 1;
+        luyouBT.write(arr);
+    },
+
+    write_straight: function(){
+        luyouBT.write('S');
+    },
+
+    write_right: function(){
+        alert("right");
+        var arr = new Uint8Array(1);
+        arr[0] = 2;
+        luyouBT.write(arr);
     }
 };
